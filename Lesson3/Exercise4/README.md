@@ -33,14 +33,14 @@ Lets look on training results.
 ## Results
 
 ### Hopper
-
+#### original
 ![Graph of original hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/original.png)
-
+#### modified
 ![Graph of modified hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/modified.png)
 
 ### Halfcheetah
-
+#### original
 ![Graph of original halfcheetah](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/halfcheetah/original.png)
-
+#### modified
 ![Graph of modified halfcheetah](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/halfcheetah/modified.png)
 
