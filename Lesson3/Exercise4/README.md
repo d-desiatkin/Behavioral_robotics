@@ -18,3 +18,12 @@ Specially edited environment files was provided to us. Their contains modificati
 We was asked to explain why original functions is not fit for GA. My initial guess (I haven't looked at the code at all) is that they will create broad search space with strong attractors or rewrard local minimums. So our modifications will help to overcome this phenomena.
 
 Now lets look on the code.
+
+.........
+.........
+Now look at diff files.
+.........
+
+Lets look on training results.
+
+## Results
