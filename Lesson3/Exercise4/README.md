@@ -44,3 +44,7 @@ Lets look on training results.
 #### modified
 ![Graph of modified halfcheetah](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/halfcheetah/modified.png)
 
+## Discussion
+If you will launch simmulations it seems that punishment for energy usage is too great for original reward of both robots. They stabilise themselves in downward position right before the jump, but not take any further actions. Modified robots have not such problem. They behave pretty well.
+
+It seems that energy condition in reward create a vast minimum, and it for GA to get free from it.
