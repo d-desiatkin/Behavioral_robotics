@@ -1,0 +1,65 @@
+1c1,2
+< from pybullet_envs.robot_bases import XmlBasedRobot, MJCFBasedRobot, URDFBasedRobot
+---
+> # custom version suitable for evolutionary strategies
+> from robot_bases import XmlBasedRobot, MJCFBasedRobot, URDFBasedRobot
+6c7
+< from pybullet_envs.robot_bases import BodyPart
+---
+> from robot_bases import BodyPart
+28a30,32
+>     self.angle_to_target = 0
+>     self.mystep = 0
+>     self.body_minx = 0
+48a53,55
+>     # the following two lines compute minx (stefano)
+>     bodyxvect = parts_xyz[0::3]
+>     self.body_minx = np.min(bodyxvect[0:-1])
+56a64
+>     self.angle_to_target = angle_to_target
+97c105
+<     WalkerBase.__init__(self, "hopper.xml", "torso", action_dim=3, obs_dim=15, power=0.75)
+---
+>     WalkerBase.__init__(self, "hopper.xml", "torso", action_dim=3, obs_dim=15, power=0.75)   
+110c118
+<     return +1 if z > 0.8 and abs(pitch) < 1.0 else -1
+---
+>     return 1 if z > 0.8 and abs(pitch) < 1.0 else -1
+120a129,130
+>   #print("PyBullet HalfCheetah: bonus 1, terminates if z <= 0.3 or picth < 1.0 or knees in contact with the ground")
+> 
+127,128c137,143
+<     return +1 if np.abs(pitch) < 1.0 and not self.feet_contact[1] and not self.feet_contact[
+<         2] and not self.feet_contact[4] and not self.feet_contact[5] else -1
+---
+>     # Added z < 0.3 as termination condition
+>     if (z < 0.3 or np.abs(pitch) > 1.0 or self.feet_contact[1] > 0 or self.feet_contact[
+>         2] > 0 or self.feet_contact[4] > 0 or self.feet_contact[5] > 0):
+>         value = -1
+>     else:
+>         value = 0
+>     return(value)
+152a168
+>   #print("PYBullet Humanoid: bonus = 1.5, initial joint range [-0.03, 0.03]")
+164c180,193
+<     WalkerBase.robot_specific_reset(self, bullet_client)
+---
+> 
+>     # custom version for evolutionary strategies
+>     # initial joint position vary in the range [-0.03, 0.03] to avoid body-body collisions
+>     self._p = bullet_client
+>     for j in self.ordered_joints:
+>       j.reset_current_position(self.np_random.uniform(low=-0.03, high=0.03), 0)
+> 
+>     self.feet = [self.parts[f] for f in self.foot_list]
+>     self.feet_contact = np.array([0.0 for f in self.foot_list], dtype=np.float32)
+>     self.scene.actor_introduce(self)
+>     self.initial_z = None
+>     self.angle_to_target = 0
+>     self.mystep = 0
+>     
+207c236,237
+<     return +2 if z > 0.78 else -1  # 2 here because 17 joints produce a lot of electricity cost just from policy noise, living must be better than dying
+---
+>     # bonus is reduced to 1.5 from 2.0
+>     return +1.5 if z > 0.78 else -1  # 2 here because 17 joints produce a lot of electricity cost just from policy noise, living must be better than dying

@@ -1,0 +1,281 @@
+0a1
+> # custom version adapted for evolutionary strategies
+137a139,177
+>     print("PyBullet Hopper: reward = progress")
+> 
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+> 
+>  
+>     self.HUD(state, a, done)
+> 
+>     return state, progress, bool(done), {"progress" : progress}
+144a185,225
+>     print("PyBullet Walker2d: reward = progress")
+>     self.oldz = 0
+> 
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     self.robot.mystep += 1
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+>  
+>     self.HUD(state, a, done)
+> 
+>     return state, progress, bool(done), {"progress" : progress}
+151a233
+>     print("PyBullet Halfcheetah: reward = progress + (njoint_at_limit * -0.1), terminate also when z < 0.3")
+155a238,279
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+> 
+>     joints_at_limit_cost = float(self.joints_at_limit_cost * self.robot.joints_at_limit)
+>  
+>     self.HUD(state, a, done)
+> 
+>     if (self._alive < 0):
+>         return state, progress + joints_at_limit_cost, True, {"progress" : progress}
+>     else:
+>         return state, progress + joints_at_limit_cost, False, {"progress" : progress}        
+> 
+161a286,327
+>     print("ByBullet Ant: reward = progress + 0.01 + (torque_cost * -0.01) + (nJointLimit * -0.1)")
+> 
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+> 
+>     stall_cost = -0.01 * float(np.square(a).mean())
+>     joints_at_limit_cost = float(-0.1 * self.robot.joints_at_limit)
+>     #jspeedrew  = 1.0  * float(np.abs(self.robot.joint_speeds).mean()) 
+>  
+>     self.HUD(state, a, done)
+> 
+>     return state, progress + 0.01 + stall_cost + joints_at_limit_cost, bool(done), {"progress" : progress}
+169,170c335,391
+<     self.electricity_cost = 4.25 * WalkerBaseBulletEnv.electricity_cost
+<     self.stall_torque_cost = 4.25 * WalkerBaseBulletEnv.stall_torque_cost
+---
+>   print("PyBullet Humanoid: reward = progress_clipper_first200 + 1.0 - feet_cost(0.0/0.33/1.0)  + (nJLimits * -0.1) + (angleoffset * -0.1): init_range [-0.03,0.03]")
+> 
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+>     
+>     joints_at_limit_cost = float(-0.1 * self.robot.joints_at_limit)
+>     
+>     #jexcess = 0
+>     #for i in range(17):
+>         #if (abs(state[i*2+8]) > 1.0):
+>             #jexcess += (abs(state[i*2+8]) - 1.0)
+>     #joints_excess_cost = jexcess * -10.0
+>     
+>     angle_offset_cost = (self.robot.angle_to_target * self.robot.angle_to_target) * -0.1
+> 
+>     feet_cost = 0
+>     if (self.robot.feet_contact[0] == 0.0 and self.robot.feet_contact[1] == 0.0):
+>         feet_cost -= 1.0
+>     if (self.robot.feet_contact[0] > 0.0 and self.robot.feet_contact[1] > 0.0):
+>         feet_cost -= 0.33
+>     if (self.robot.mystep < 200):
+>         progress = np.clip(progress, -1.0, 1.0)
+>     self.robot.mystep += 1
+>  
+>     self.HUD(state, a, done)
+> 
+>     return state, progress + 1.0 + feet_cost + joints_at_limit_cost + angle_offset_cost , bool(done), {"progress" : progress}
+183a405,451
+> 
+>   def step(self, a):
+>     if not self.scene.multiplayer:  # if multiplayer, action first applied to all robots, then global step() called, then _step() for all robots with the same actions
+>       self.robot.apply_action(a)
+>       self.scene.global_step()
+> 
+>     state = self.robot.calc_state()  # also calculates self.joints_at_limit
+> 
+>     self._alive = float(
+>         self.robot.alive_bonus(
+>             state[0] + self.robot.initial_z,
+>             self.robot.body_rpy[1]))  # state[0] is body height above ground, body_rpy[1] is pitch
+>     done = self._isDone()
+>     if not np.isfinite(state).all():
+>       print("~INF~", state)
+>       done = True
+> 
+>     potential_old = self.potential
+>     self.potential = self.robot.calc_potential()
+>     progress = float(self.potential - potential_old)
+> 
+>     feet_collision_cost = 0.0
+>     for i, f in enumerate(
+>         self.robot.feet
+>     ):  # TODO: Maybe calculating feet contacts could be done within the robot code
+>       contact_ids = set((x[2], x[4]) for x in f.contact_list())
+>       #print("CONTACT OF '%d' WITH %d" % (contact_ids, ",".join(contact_names)) )
+>       if (self.ground_ids & contact_ids):
+>         #see Issue 63: https://github.com/openai/roboschool/issues/63
+>         #feet_collision_cost += self.foot_collision_cost
+>         self.robot.feet_contact[i] = 1.0
+>       else:
+>         self.robot.feet_contact[i] = 0.0
+>     
+>     joints_at_limit_cost = float(-0.1 * self.robot.joints_at_limit)
+>     
+>     jexcess = 0
+>     for i in range(17):
+>         if (abs(state[i*2+8]) > 1.0):
+>             jexcess += (abs(state[i*2+8]) - 1.0)
+>     joints_excess_cost = jexcess * -10.0
+>     
+>     angle_offset_cost = (self.robot.angle_to_target * self.robot.angle_to_target) * -0.1 
+>  
+>     self.HUD(state, a, done)
+> 
+>     return state, progress + 0.75 + joints_excess_cost + joints_at_limit_cost + angle_offset_cost , bool(done), {"progress" : progress}
