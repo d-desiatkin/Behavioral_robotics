@@ -29,6 +29,6 @@ Lets look on training results.
 ## Results
 
 ### Hopper
-![Graph of original hopper](https://github.com/d-desiatkin/Behavioral_robotics/Lesson3/Exercise4/hopper/original.png)
+![Graph of original hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/original.png)
 
-![Graph of modified hopper](https://github.com/d-desiatkin/Behavioral_robotics/Lesson3/Exercise4/hopper/modified.png)
+![Graph of modified hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/modified.png)
