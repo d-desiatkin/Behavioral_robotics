@@ -1,3 +1,7 @@
+# Report
+
+## Exercise 4 description
+
 In this exercise we must understand the importance of correct reward function.
 We will work with two bullet environments, their key parameters are listed bellow.
 
@@ -29,6 +33,14 @@ Lets look on training results.
 ## Results
 
 ### Hopper
+
 ![Graph of original hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/original.png)
 
 ![Graph of modified hopper](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/hopper/modified.png)
+
+### Halfcheetah
+
+![Graph of original halfcheetah](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/halfcheetah/original.png)
+
+![Graph of modified halfcheetah](https://github.com/d-desiatkin/Behavioral_robotics/blob/master/Lesson3/Exercise4/halfcheetah/modified.png)
+
