@@ -35,8 +35,7 @@ double *neuronact = NULL;
 double *cnormalization = NULL;
 
 
-bool Dmitrii_start_learning = true;
-float *Dmitrii_ptr_cact_prev = NULL;
+int Total_net_number = 0;
 
 /*
  * logistic activation functiom
@@ -115,6 +114,12 @@ Evonet::Evonet(int nnetworks, int heterogeneous, int ninputs, int nhiddens, int 
 {
     
     m_nnetworks = nnetworks;
+    Dmitrii_start_learning = new bool[nnetworks];
+    Dmitrii_ptr_cact_prev = new float*[nnetworks];
+    for(int i = 0; i < nnetworks; i++){
+        Dmitrii_start_learning[i] = true;
+        Dmitrii_ptr_cact_prev[i] = new float[ninputs + noutputs];
+    }
     m_heterogeneous = heterogeneous;
 	m_nbins = nbins;
 	if (m_nbins < 1 || m_nbins > 20) // ensures that m_bins is in an appropriate rate
@@ -277,6 +282,7 @@ void Evonet::resetNet()
     neura = neuronact;
     for (n = 0; n < m_nnetworks; n++)
      {
+      Dmitrii_start_learning[n] = true;
 	  for (i = 0; i < m_nneurons; i++, neura++)
 	  {
 		*neura = 0.0;
@@ -329,8 +335,9 @@ void Evonet::copyNormalization(double* no)
 // update net
 void Evonet::updateNet()
 {   
-    // std::ofstream outfile;
-    // outfile.open("test.txt", std::ios_base::app);
+    // std::ofstream inputs_adds_file, output_file;
+    // inputs_adds_file.open("Inp_adds.txt", std::ios_base::app);
+    // output_file.open("outputs.txt", std::ios_base::app);
 
     double* p;         // free parameters
     double* neurona;   // the activation vector of the current network
@@ -351,8 +358,6 @@ void Evonet::updateNet()
     double lstm[4]; // gates: forget, input, output, gate-gate
 
     
-	
-	
     if (m_heterogeneous == 1)
        p = cgenotype;
     
@@ -406,7 +411,7 @@ void Evonet::updateNet()
                 }
             }
         }
-        // outfile << "\n Previous output: \n";
+
         // blocks
         for (b = 0, nbl = m_netblock; b < m_nblocks; b++)
         {
@@ -477,17 +482,25 @@ void Evonet::updateNet()
             {   
                 for(t = *(nbl + 1), a = (neurona + *(nbl + 1)), ni = (m_netinput + *(nbl + 1)), nt = (m_neurontype + *(nbl + 1)); t < (*(nbl + 1) + *(nbl + 2)); t++, a++, ni++, nt++)
                 {
+                    // Change prediction neuron type to tanh;
+                    if(b == (m_nblocks - 1) && (t - *(nbl + 1)) >= (m_noutputs - m_ninputs))
+                    {
+                        *a = linear(*ni);
+                        *(Dmitrii_ptr_cact_prev[n] + t - *(nbl + 1)) = *a;
+                        continue;
+                    }
+
                     switch (*nt)
                     {
                         case 0:
                             // input neurons are simple rely units
-                            if (Dmitrii_start_learning){
+                            if (Dmitrii_start_learning[n]){
+                                // inputs_adds_file << *(cobserv + t) << "\t" << 0 << "\n";
                                 *a = *(cobserv + t);
-                                // outfile << 0 << " ";
                             }
                             else{
-                                // outfile << *(cact + (m_noutputs - m_ninputs) + t) << " ";
-                                *a = *(cobserv + t) + *(Dmitrii_ptr_cact_prev + m_noutputs - m_ninputs + t);
+                                // inputs_adds_file << *(cobserv + t) << "\t" << *(Dmitrii_ptr_cact_prev[n] + (m_noutputs - m_ninputs) + t) << "\n";
+                                *a = *(cobserv + t) + *(Dmitrii_ptr_cact_prev[n] + m_noutputs - m_ninputs + t);
                             } //TODO modify that string I need to add the output of prev layer
                             break;
                         case 1:
@@ -510,15 +523,18 @@ void Evonet::updateNet()
                                 *a = -1.0;
                             break;
                     }
+                    if(b == (m_nblocks - 1)){
+                        *(Dmitrii_ptr_cact_prev[n] + t - *(nbl + 1)) = *a;
+                    }
+
                     
                 }
-                Dmitrii_start_learning = false;
+                Dmitrii_start_learning[n] = false;
             }
             
             nbl = (nbl + 5);
         }
         // store actions
-        Dmitrii_ptr_cact_prev = cact;
         if (m_nbins == 1)
         {
             int i;
@@ -530,18 +546,18 @@ void Evonet::updateNet()
                   // standard no-noise
                   case 0:
                     cact[i] = neurona[m_ninputs + m_nhiddens + i];
-                    // outfile << cact[i] << " ";
+                    // output_file << cact[i] << "\n";
                     break;
 				  // gaussian noise with fixed range
 				  case 1:
                     cact[i] = neurona[m_ninputs + m_nhiddens + i] + (netRng->getGaussian(1.0, 0.0) * m_randActR);
-                    // outfile << cact[i] << " ";
+                    // output_file << cact[i] << "\n";
                     break;
 				  // gaussian noise with parametric range (diagonal-gaussian)
 				  case 2:
                     cact[i] = neurona[m_ninputs + m_nhiddens + i] + (netRng->getGaussian(1.0, 0.0) * exp(*p));
                     p++;
-                    // outfile << cact[i] << " ";
+                    // output_file << cact[i] << "\n";
                     break;
                   
 				}
@@ -583,7 +599,8 @@ void Evonet::updateNet()
 		 }
 		
     }
-    // outfile.close();
+    // inputs_adds_file.close();
+    // output_file.close();
     
 }
 

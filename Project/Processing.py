@@ -13,7 +13,7 @@ flag_new = False
 exp_counter = 0
 proj_path = os.path.dirname(os.path.abspath('./Processing.py'))
 
-f = open(proj_path + "/Results/Modified_observation/xdpole/nh_18/Inp_adds_g240.txt", "r")
+f = open(proj_path + "/Results/Modified_observation/xdpole/nh_40/Inp_adds_320.txt", "r")
 for ind, line in enumerate(f.readlines()):
     if ind % 3 == 0:
         if flag_new:
@@ -35,7 +35,7 @@ for ind, line in enumerate(f.readlines()):
     reg_exp = re.search("(-?\d*\.?\d*e?-?\d*)\ *\t*(-?\d*\.?\d*e?-?\d*)", line)
     obs = float(reg_exp.group(1))
     pred = float(reg_exp.group(2))
-    if obs > 1 or obs < -1:
+    if (obs >= 1 or obs <= -1 or counter >= 1000):
         flag_new = True
     y_pred[ind % 3].append(pred)
     y_obs[ind % 3].append(obs)

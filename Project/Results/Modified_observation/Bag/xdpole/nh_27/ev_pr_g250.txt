@@ -1,0 +1,19 @@
+Environment ErDpole nreplications 1 maxmsteps 10000m 
+Evaluation: Episodes 10 Test Episodes 10 MaxSteps 1000
+Run Test: Environment ErDpole testfile bestgS250.npy
+Trial 0 Fit 13.00 Steps 14 
+Trial 1 Fit 1000.00 Steps 1000 
+Trial 2 Fit 13.00 Steps 14 
+Trial 3 Fit 66.00 Steps 67 
+Trial 4 Fit 1000.00 Steps 1000 
+Trial 5 Fit 1000.00 Steps 1000 
+Trial 6 Fit 17.00 Steps 18 
+Trial 7 Fit 34.00 Steps 35 
+Trial 8 Fit 1000.00 Steps 1000 
+Trial 9 Fit 26.00 Steps 27 
+Average Fit 416.90 Steps 417.50 
+Postevauation: Average Fitness 416.90 Total Steps 4175
+Double-pole: pole_length_2 0.50 pole_mass_2 0.10
+Double-pole: pole_length_2 0.50 pole_mass_2 0.10
+Double-pole: pole_length_2 0.50 pole_mass_2 0.10
+Network 3->27->4 feedforward with bias linear output:tanh init:xavier 
