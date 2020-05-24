@@ -1,0 +1,56 @@
+Environment AntBulletEnv-v0 nreplications 1 maxmsteps 50m 
+PyBullet Humanoid: reward = progress_clipper_first200 + 1.0 - feet_cost(0.0/0.33/1.0)  + (nJLimits * -0.1) + (angleoffset * -0.1): init_range [-0.03,0.03]
+ByBullet Ant: reward = progress + 0.01 + (torque_cost * -0.01) + (nJointLimit * -0.1)
+Evaluation: Episodes 1 Test Episodes 3 MaxSteps 700
+Run Test: Environment AntBulletEnv-v0 testfile bestS150.npy
+Trial 0 Fit 1029.49 Steps 700 
+Trial 1 Fit 1074.91 Steps 700 
+Trial 2 Fit 905.72 Steps 700 
+Average Fit 1003.37 Steps 700.00 
+Postevauation: Average Fitness 1003.37 Total Steps 2100
+pybullet build time: Mar 26 2020 10:29:32
+Network 28->50->36 feedforward with bias tanh output:linear init:norm-incoming input-normalization clip output-noise 0.01 
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+argc=2
+argv[0] = --unused
+argv[1] = --start_demo_name=Physics Server
+ExampleBrowserThreadFunc started
+X11 functions dynamically loaded using dlopen/dlsym OK!
+X11 functions dynamically loaded using dlopen/dlsym OK!
+Creating context
+Created GL 3.3 context
+Direct GLX rendering context obtained
+Making context current
+GL_VENDOR=VMware, Inc.
+GL_RENDERER=llvmpipe (LLVM 6.0, 256 bits)
+GL_VERSION=3.3 (Core Profile) Mesa 18.0.5
+GL_SHADING_LANGUAGE_VERSION=3.30
+pthread_getconcurrency()=0
+Version = 3.3 (Core Profile) Mesa 18.0.5
+Vendor = VMware, Inc.
+Renderer = llvmpipe (LLVM 6.0, 256 bits)
+b3Printf: Selected demo: Physics Server
+startThreads creating 1 threads.
+starting thread 0
+started thread 0 
+MotionThreadFunc thread started
+ven = VMware, Inc.
+numActiveThreads = 0
+stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed
+finished
+numActiveThreads = 0
+btShutDownExampleBrowser stopping threads
+Thread with taskId 0 exiting
+Thread TERMINATED
+destroy semaphore
+semaphore destroyed
+destroy main semaphore
+main semaphore destroyed

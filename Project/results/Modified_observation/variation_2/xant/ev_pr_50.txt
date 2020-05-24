@@ -1,0 +1,17 @@
+Environment AntBulletEnv-v0 nreplications 1 maxmsteps 50m 
+PyBullet Humanoid: reward = progress_clipper_first200 + 1.0 - feet_cost(0.0/0.33/1.0)  + (nJLimits * -0.1) + (angleoffset * -0.1): init_range [-0.03,0.03]
+ByBullet Ant: reward = progress + 0.01 + (torque_cost * -0.01) + (nJointLimit * -0.1)
+Evaluation: Episodes 1 Test Episodes 10 MaxSteps 700
+Run Test: Environment AntBulletEnv-v0 testfile bestS150.npy
+Trial 0 Fit -177.13 Steps 453 
+Trial 1 Fit -14.51 Steps 80 
+Trial 2 Fit 531.94 Steps 292 
+Trial 3 Fit -72.39 Steps 178 
+Trial 4 Fit -369.85 Steps 700 
+Trial 5 Fit 7.39 Steps 57 
+Trial 6 Fit -285.36 Steps 580 
+Trial 7 Fit 5.35 Steps 53 
+Trial 8 Fit -10.80 Steps 31 
+Trial 9 Fit 6.11 Steps 59 
+Average Fit -37.93 Steps 248.30 
+Postevauation: Average Fitness -37.93 Total Steps 2483
